@@ -37,21 +37,24 @@
 				if (_data[attrName] === value) return;
 				_data[attrName] = value;
 				//trigger change notification for 'attrName'
-				var eventHandlerFn = _eventHandlers[attrName];
-				if (typeof eventHandlerFn === 'function')
-					eventHandlerFn();
+				var eventHandlerFns = _eventHandlers[attrName];
+				eventHandlerFns.forEach(function(eventHandlerFn){
+					if (typeof eventHandlerFn === 'function')
+						eventHandlerFn();	
+				});
+				
 			};
 
 			var _eventHandlers = {
-				basic : null,
-				hra : null,
-				da : null,
-				tax : null,
-				salary : null
+				basic : [],
+				hra : [],
+				da : [],
+				tax : [],
+				salary : []
 			};
 
 			this.watch = function(attrName, eventHandlerFn){
-				_eventHandlers[attrName] = eventHandlerFn;
+				_eventHandlers[attrName].push(eventHandlerFn);
 			};
 		}
 		SalaryCalculator.prototype.calculate = function(){
@@ -62,6 +65,8 @@
 		//View
 		$(document).ready(function(){
 			window.calculator = new SalaryCalculator();
+
+			//React to user actions
 			$("#txtBasic").change(function(){
 				calculator.set('basic', $("#txtBasic").val().toInt());
 			});
@@ -78,10 +83,8 @@
 				calculator.calculate();
 			});
 
-			$("#rangeTax").change(function(){
-				
-			});
-
+			
+			//React to model changes
 			calculator.watch('salary', function(){
 				$("#divResult").html(calculator.get('salary'));
 			});
