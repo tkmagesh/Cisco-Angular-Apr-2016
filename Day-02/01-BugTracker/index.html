@@ -28,6 +28,9 @@
 			border-radius: 4px;
 			padding: 5px;
 		}
+		.datetime{
+			font-style: italic;
+		}
 	</style>
 	<script type="text/usecases">
 		/*
@@ -82,6 +85,7 @@
 					++this.newBugCount;
 					var name = bugName || appDefaults.bugName;
 					return {
+						id : 0,
 						name : name,
 						isClosed : false
 					};
@@ -90,27 +94,57 @@
 		});
 		//bugTrackerApp.value("bugOperations", getBugOperations());
 
-		bugTrackerApp.controller("bugsController", function($scope, bugOperations){
+		bugTrackerApp.factory("bugStorage", function($window){
+
+			var storage = $window.localStorage;
+			var maxBugId = 0;
+
+			function getAllBugs(){
+				var result= [];
+				for(var i=0; i<storage.length; i++){
+					var bug = angular.fromJson(storage.getItem(storage.key(i)));
+					maxBugId = maxBugId < bug.id ? bug.id : maxBugId;
+					result.push(bug);
+				}
+				return result;
+			}
+
+			function saveBug(bug){
+				if (!bug.id) bug.id = ++maxBugId;
+				storage.setItem(bug.id, angular.toJson(bug));
+				return bug;
+			}
+			function removeBug(bug){
+				storage.removeItem(bug.id);
+			}
+
+			return {
+				getAll : getAllBugs,
+				save : saveBug,
+				remove : removeBug
+			};
+		});
+
+		bugTrackerApp.controller("bugsController", function($scope, bugOperations, bugStorage){
 			
-			$scope.bugs = [
-				{name : "User authentication failure" , isClosed : false},
-				{name : "Server communication erratic" , isClosed : false},
-				{name : "Object reference not found" , isClosed : false},
-			];
+			$scope.bugs = bugStorage.getAll();
 
 			$scope.addNew = function(bugName){
-				var newBug = bugOperations.createNew(bugName);
+				var newBug = bugStorage.save(bugOperations.createNew(bugName));
 				$scope.bugs.push(newBug);
 			};
 
 			$scope.toggle = function(bug){
 				bugOperations.toggle(bug);
+				bugStorage.save(bug);
 			};
 
 			$scope.removeClosed = function(){
 				for(var i=$scope.bugs.length -1; i>=0; i--)
-					if ($scope.bugs[i].isClosed)
+					if ($scope.bugs[i].isClosed){
+						bugStorage.remove($scope.bugs[i]);
 						$scope.bugs.splice(i,1);
+					}
 			};
 
 		
@@ -191,6 +225,7 @@
 					<span class="name" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">
 						{{bug.name | trimText:30}}
 					</span>
+					<div class="datetime">'[Created At]'</div>
 				</li>
 			</ol>
 		</section>
