@@ -38,8 +38,20 @@
 		5. Display statistics - done
 		6. Search for bugs - done
 		7. Sort the bugs - done
-		8. Improve the bug display 
+		8. Improve the bug display - done
 		9. Persist the bugs in the localStorage
+			- key/value store
+			- key -> unique, value -> string
+			- use angular.toJson() and angular.fromJson() for serialization and deserialization respectively
+			window.localStorage
+				- setItem(key, value)
+				- getItem(key) => value
+				- removeItem(key)
+				- key(index) => key at index
+				- clear()
+				- length
+
+
 		10. Display createdAt
 		11. Persist the bugs in the server
 		12. Categorize the bugs
@@ -52,7 +64,8 @@
 		var bugTrackerApp = angular.module("bugTrackerApp", []);
 
 		bugTrackerApp.value("appDefaults", {
-			bugName : '[Default Bug]'
+			bugName : '[Default Bug]',
+			trimLength : 20
 		})
 
 		
@@ -100,19 +113,51 @@
 						$scope.bugs.splice(i,1);
 			};
 
-			$scope.getClosedCount = function(){
-				return $scope.bugs.filter(function(bug){
+		
+		});
+
+		bugTrackerApp.filter("trimText", function(appDefaults){
+			return function(data, trimLength){
+				trimLength = trimLength || appDefaults.trimLength;
+				return data.length < trimLength ? data : data.substr(0,trimLength) + '...';
+			};
+		});
+
+		/*bugTrackerApp.filter("toClosedCount", function(){
+			return function(bugs){
+				return bugs.filter(function(bug){
 					return bug.isClosed;
 				}).length;
 			}
+		});*/
+
+		/*bugTrackerApp.filter("toClosedCount", function($filter){
+			var builtInFilter = $filter('filter');
+			return function(bugs){
+				return builtInFilter(bugs, {isClosed : true}).length;
+			}
+		});*/
+
+		bugTrackerApp.filter("toClosedCount", function(){
+			return function(bugs){
+				return bugs.reduce(function(result, bug){
+					return bug.isClosed ? ++result : result;
+				},0);
+			};
 		});
+
+		/*bugTrackerApp.filter("trimText", function(data){
+			return data.length < 30 ? data : data.substr(0,30) + '...';
+		});*/
 	</script>
 </head>
 <body ng-app="bugTrackerApp">
 	<h1>Bug Tracker</h1>
 	<div class="content" ng-controller="bugsController">
 		<section class="stats">
-			<span class="closed">{{getClosedCount()}}</span>
+			<!-- <span class="closed">{{ (bugs | filter:{isClosed : true}).length }}</span> -->
+
+			<span class="closed">{{bugs | toClosedCount}}</span>
 			<span>/</span>
 			<!-- <span ng-bind="bugs.length"></span> -->
 			<span>{{bugs.length}}</span>
@@ -144,7 +189,7 @@
 			<ol>
 				<li ng-repeat="bug in (bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder)">
 					<span class="name" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">
-						{{bug.name}}
+						{{bug.name | trimText:30}}
 					</span>
 				</li>
 			</ol>
