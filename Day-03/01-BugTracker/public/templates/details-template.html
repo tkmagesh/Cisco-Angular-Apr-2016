@@ -1,8 +1,8 @@
 <div class="content"  style="width:400px">
 	<a href="/#/list">List</a>
-	<h2>{{bug.name}}</h2>
-	<p>{{bug.description}}</p>
+	<h2>{{bugDetailsCtrl.bug.name}}</h2>
+	<p>{{bugDetailsCtrl.bug.description}}</p>
 	<hr>
-	<div><label for="">Created At :</label><span>{{bug.createdAt | elapsed}}</span></div>
-	<div style="position: absolute; right:0px"><label for="">Updated At :</label><span>{{bug.updatedAt | elapsed}}</span></div>
+	<div><label for="">Created At :</label><span>{{bugDetailsCtrl.bug.createdAt | elapsed}}</span></div>
+	<div style="position: absolute; right:0px"><label for="">Updated At :</label><span>{{bugDetailsCtrl.bug.updatedAt | elapsed}}</span></div>
 </div>

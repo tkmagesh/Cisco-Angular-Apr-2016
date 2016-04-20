@@ -80,7 +80,8 @@
 				})
 				.when("/details/:bugid", {
 					templateUrl :'templates/details-template.html',
-					controller : 'bugDetailsController'
+					controller : 'bugDetailsController',
+					controllerAs : 'bugDetailsCtrl'
 				})
 				.otherwise({
 					redirectTo : "/list"
@@ -253,10 +254,11 @@
 			};
 		});
 
-		bugTrackerApp.controller("bugDetailsController", function($scope, bugService, $routeParams){
+		bugTrackerApp.controller("bugDetailsController", function(bugService, $routeParams){
 			var bugId = parseInt($routeParams.bugid,10);
+			var self = this;
 			bugService.get(bugId).then(function(bug){
-				$scope.bug = bug;
+				self.bug = bug;
 			});
 		});
 
