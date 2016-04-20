@@ -55,17 +55,37 @@
 				- length
 		10. Display createdAt - done
 		
-		11. Persist the bugs in the server
+		11. Persist the bugs in the server - done
 		12. Categorize the bugs
 		13. Allow the user to access a bug using a link
 		14. Write unit tests & user acceptance tests
 		*/
 	</script>
 	<script src="angular.js"></script>
+	<script src="angular-route.js"></script>
 	<script src="moment.js"></script>
 	<script src="utils.js"></script>
 	<script>
-		var bugTrackerApp = angular.module("bugTrackerApp", ["utils"]);
+		var bugTrackerApp = angular.module("bugTrackerApp", ["ngRoute", "utils"]);
+
+		bugTrackerApp.config(function($routeProvider){
+			$routeProvider
+				.when("/list", {
+					templateUrl : 'templates/list-template.html',
+					controller : 'bugsController'
+				})
+				.when("/new", {
+					templateUrl : 'templates/new-template.html',
+					controller : 'bugsController'
+				})
+				.when("/details/:bugid", {
+					templateUrl :'templates/details-template.html',
+					controller : 'bugDetailsController'
+				})
+				.otherwise({
+					redirectTo : "/list"
+				});
+		});
 
 		bugTrackerApp.value("appDefaults", {
 			bugName : '[Default Bug]',
@@ -80,6 +100,7 @@
 				},
 				toggle : function(bug){
 					bug.isClosed = !bug.isClosed;
+					bug.updatedAt = new Date();
 				},
 				createNew : function(bugName){
 					var name = bugName || appDefaults.bugName;
@@ -87,7 +108,9 @@
 						id : 0,
 						name : name,
 						isClosed : false,
-						createdAt : new Date()
+						description : 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+						createdAt : new Date(),
+						updatedAt : new Date()
 					};
 				}
 			};
@@ -164,21 +187,6 @@
 
 		bugTrackerApp.service("bugService", function($http, $q, bugOperations){
 			this.getAll = function getAllBugs(){
-				/*var deferred = $q.defer();
-
-				var httpPromise = $http.get("http://localhost:3000/bugs");
-				httpPromise.then(function(response){
-					deferred.resolve(response.data);
-				});	
-
-				return deferred.promise;*/
-
-				/*var httpPromise = $http.get("http://localhost:3000/bugs");
-				var myPromise = httpPromise.then(function(response){
-					return response.data;
-				});	
-				return myPromise;*/
-
 				return $http
 					.get("http://localhost:3000/bugs")
 					.then(function(response){
@@ -204,10 +212,18 @@
 			}
 			this.remove = function removeBug(bug){
 				return $http.delete("http://localhost:3000/bugs/" + bug.id);
-			}
+			};
+
+			this.get = function(id){
+				return $http
+					.get("http://localhost:3000/bugs/" + id)
+					.then(function(response){
+						return response.data;
+					});
+			};
 		});
 
-		bugTrackerApp.controller("bugsController", function($scope, bugService){
+		bugTrackerApp.controller("bugsController", function($scope, bugService, $location){
 			
 			$scope.bugs = [];
 
@@ -219,7 +235,9 @@
 			$scope.addNew = function(bugName){
 				bugService.addNew(bugName).then(function(newBug){
 					$scope.bugs.push(newBug);
+					$location.url("/list");
 				});
+
 			};
 
 			$scope.toggle = function(bug){
@@ -233,26 +251,14 @@
 						$scope.bugs.splice(i,1);
 					}
 			};
-
-		
 		});
 
-		
-
-		/*bugTrackerApp.filter("toClosedCount", function(){
-			return function(bugs){
-				return bugs.filter(function(bug){
-					return bug.isClosed;
-				}).length;
-			}
-		});*/
-
-		/*bugTrackerApp.filter("toClosedCount", function($filter){
-			var builtInFilter = $filter('filter');
-			return function(bugs){
-				return builtInFilter(bugs, {isClosed : true}).length;
-			}
-		});*/
+		bugTrackerApp.controller("bugDetailsController", function($scope, bugService, $routeParams){
+			var bugId = parseInt($routeParams.bugid,10);
+			bugService.get(bugId).then(function(bug){
+				$scope.bug = bug;
+			});
+		});
 
 		bugTrackerApp.filter("toClosedCount", function(){
 			return function(bugs){
@@ -261,56 +267,11 @@
 				},0);
 			};
 		});
-
-		
-
-		
 	</script>
 </head>
 <body ng-app="bugTrackerApp">
 	<h1>Bug Tracker</h1>
-	<div class="content" ng-controller="bugsController">
-		<section class="stats">
-			<!-- <span class="closed">{{ (bugs | filter:{isClosed : true}).length }}</span> -->
-
-			<span class="closed">{{bugs | toClosedCount}}</span>
-			<span>/</span>
-			<!-- <span ng-bind="bugs.length"></span> -->
-			<span>{{bugs.length}}</span>
-		</section>
-		<section class="search">
-			<label for="">Search :</label>
-			<input type="text" ng-model="searchBug.name">
-			<labe>Is Closed ? :</labe>
-			<input type="checkbox" ng-model="searchBug.isClosed">
-			<input type="button" value="Show All" ng-click="searchBug.isClosed = ''">
-		</section>
-		<section class="sort">
-			<label for="">Order By :</label>
-			<!-- <input type="text" ng-model="sortBugBy"> -->
-			<select ng-model="sortBugBy">
-				<option value="name">Name</option>
-				<option value="isClosed">Status</option>
-			</select>
-			<label for="">Descending ? :</label>
-			<input type="checkbox" ng-model="sortBugOrder">
-		</section>
-		<section class="edit">
-			<label for="">Bug Name :</label>
-			<input type="text" ng-model="newBugName">
-			<input type="button" value="Add New" ng-click="addNew(newBugName)">
-			<input type="button" value="Remove Closed" ng-click="removeClosed()">
-		</section>
-		<section class="list">
-			<ol>
-				<li ng-repeat="bug in (bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder)">
-					<span class="name" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">
-						{{bug.name | trimText:30}}
-					</span>
-					<div class="datetime">{{bug.createdAt | elapsed}}</div>
-				</li>
-			</ol>
-		</section>
-	</div>
+	<hr>
+	<div ng-view></div>
 </body>
 </html>

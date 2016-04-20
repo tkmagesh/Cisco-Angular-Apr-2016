@@ -4,25 +4,41 @@
       "id": 2,
       "name": "JSON server is very slow",
       "isClosed": false,
-      "createdAt": "2016-02-02T05:04:28.176Z"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "createdAt": "2016-02-02T05:04:28.176Z",
+      "updatedAt": "2016-04-20T09:10:22.279Z"
     },
     {
       "id": 3,
       "name": "$http is not very dependable",
-      "isClosed": false,
-      "createdAt": "2016-02-03T06:51:10.288Z"
+      "isClosed": true,
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "createdAt": "2016-02-03T06:51:10.288Z",
+      "updatedAt": "2016-04-20T09:10:33.501Z"
     },
     {
       "id": 4,
       "name": "Loading data is not displayed",
       "isClosed": false,
-      "createdAt": "2016-03-16T18:13:06.814Z"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "createdAt": "2016-03-16T18:13:06.814Z",
+      "updatedAt": "2016-04-20T09:10:35.392Z"
     },
     {
       "id": 5,
       "name": "Another new bug",
       "isClosed": false,
-      "createdAt": "2016-04-04T10:00:14.783Z"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "createdAt": "2016-04-04T10:00:14.783Z",
+      "updatedAt": "2016-04-20T09:10:40.338Z"
+    },
+    {
+      "id": 6,
+      "name": "Bookmark is not working",
+      "isClosed": false,
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "createdAt": "2016-04-20T09:07:59.628Z",
+      "updatedAt": "2016-04-20T09:10:39.493Z"
     }
   ],
   "employees": [

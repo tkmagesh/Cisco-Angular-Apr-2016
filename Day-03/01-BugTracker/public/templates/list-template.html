@@ -1,0 +1,35 @@
+<div class="content">
+		<section class="stats">
+			<span class="closed">{{bugs | toClosedCount}}</span>
+			<span>/</span>
+			<span>{{bugs.length}}</span>
+		</section>
+		<section class="search">
+			<label for="">Search :</label>
+			<input type="text" ng-model="searchBug.name">
+			<labe>Is Closed ? :</labe>
+			<input type="checkbox" ng-model="searchBug.isClosed">
+			<input type="button" value="Show All" ng-click="searchBug.isClosed = ''">
+		</section>
+		<section class="sort">
+			<label for="">Order By :</label>
+			<select ng-model="sortBugBy">
+				<option value="name">Name</option>
+				<option value="isClosed">Status</option>
+			</select>
+			<label for="">Descending ? :</label>
+			<input type="checkbox" ng-model="sortBugOrder">
+		</section>
+		<section class="list">
+			<ol>
+				<li ng-repeat="bug in (bugs | filter:searchBug | orderBy:sortBugBy:sortBugOrder)">
+					<span class="name" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">
+						{{bug.name | trimText:30}}
+					</span>
+					<div class="datetime">{{bug.createdAt | elapsed}}</div>
+					<div><a href="/#/details/{{bug.id}}">Details</a></div>
+				</li>
+			</ol>
+		</section>
+		<a href="#/new">Create New</a>
+	</div>
