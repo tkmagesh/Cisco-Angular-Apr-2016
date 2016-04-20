@@ -125,23 +125,9 @@
 			};
 		});
 
-		bugTrackerApp.factory("bugService", function($http, $q, bugOperations){
+		//bugService as a factory
+		/*bugTrackerApp.factory("bugService", function($http, $q, bugOperations){
 			function getAllBugs(){
-				/*var deferred = $q.defer();
-
-				var httpPromise = $http.get("http://localhost:3000/bugs");
-				httpPromise.then(function(response){
-					deferred.resolve(response.data);
-				});	
-
-				return deferred.promise;*/
-
-				/*var httpPromise = $http.get("http://localhost:3000/bugs");
-				var myPromise = httpPromise.then(function(response){
-					return response.data;
-				});	
-				return myPromise;*/
-
 				return $http
 					.get("http://localhost:3000/bugs")
 					.then(function(response){
@@ -174,9 +160,54 @@
 				toggle : toggleBug,
 				remove : removeBug
 			}
+		});*/
+
+		bugTrackerApp.service("bugService", function($http, $q, bugOperations){
+			this.getAll = function getAllBugs(){
+				/*var deferred = $q.defer();
+
+				var httpPromise = $http.get("http://localhost:3000/bugs");
+				httpPromise.then(function(response){
+					deferred.resolve(response.data);
+				});	
+
+				return deferred.promise;*/
+
+				/*var httpPromise = $http.get("http://localhost:3000/bugs");
+				var myPromise = httpPromise.then(function(response){
+					return response.data;
+				});	
+				return myPromise;*/
+
+				return $http
+					.get("http://localhost:3000/bugs")
+					.then(function(response){
+						return response.data;
+					});
+
+			}
+			this.addNew = function addNewBug(bugName){
+				var newBug = bugOperations.createNew(bugName);
+				return $http
+					.post("http://localhost:3000/bugs", newBug)
+					.then(function(response){
+						return response.data;
+					});
+			}
+			this.toggle = function toggleBug(bug){
+				bugOperations.toggle(bug);
+				return $http
+					.put("http://localhost:3000/bugs/" + bug.id, bug)
+					.then(function(response){
+						return response.data;
+					});
+			}
+			this.remove = function removeBug(bug){
+				return $http.delete("http://localhost:3000/bugs/" + bug.id);
+			}
 		});
 
-		bugTrackerApp.controller("bugsController", function($scope, bugOperations, bugStorage, bugService){
+		bugTrackerApp.controller("bugsController", function($scope, bugService){
 			
 			$scope.bugs = [];
 
