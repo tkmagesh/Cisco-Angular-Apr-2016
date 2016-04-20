@@ -1,12 +1,6 @@
 {
   "bugs": [
     {
-      "id": 1,
-      "name": "Dates are not displayed",
-      "isClosed": false,
-      "createdAt": "2016-02-03T04:19:34.764Z"
-    },
-    {
       "id": 2,
       "name": "JSON server is very slow",
       "isClosed": false,
